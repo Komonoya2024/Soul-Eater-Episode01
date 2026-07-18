@@ -1,0 +1,48 @@
+name: CHAR-001 Batch A Validate
+
+on:
+  push:
+    paths:
+      - 'assets/characters/CHAR-001_Nie_Yu/**'
+  workflow_dispatch:
+
+jobs:
+  validate-asset-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required specification files
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='assets/characters/CHAR-001_Nie_Yu'
+          required=(
+            'Character_Card.md'
+            'Face_Reference.md'
+            'Turnaround.md'
+            'Costume_Bible.md'
+            'Expression_Library.md'
+            'Pose_Library.md'
+            'Prompt_Library.md'
+            'QA_Checklist.md'
+            'Image_Generation_Batch_A.md'
+            'batch_a_manifest.yaml'
+          )
+          for file in "${required[@]}"; do
+            test -s "$base/$file" || { echo "Missing or empty: $base/$file"; exit 1; }
+          done
+
+      - name: Validate approved master pair when present
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='assets/characters/CHAR-001_Nie_Yu/approved'
+          image="$base/CHAR-001_APPROVED_MASTER_v001.png"
+          metadata="$base/CHAR-001_APPROVED_MASTER_v001.json"
+          if [[ -e "$image" || -e "$metadata" ]]; then
+            test -s "$image" || { echo 'Approved image missing'; exit 1; }
+            test -s "$metadata" || { echo 'Approved metadata missing'; exit 1; }
+            python -m json.tool "$metadata" >/dev/null
+          fi
