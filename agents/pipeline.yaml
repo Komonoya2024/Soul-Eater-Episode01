@@ -1,0 +1,41 @@
+version: 0.1.0
+project: Soul-Eater-Episode01
+shot_range: SH001-SH120
+active_batch: Batch-A
+batch_range: SH001-SH030
+
+agents:
+  director:
+    responsibility: narrative_order_pacing_continuity
+    inputs: [story_bible, shot_cards, continuity_log]
+    outputs: [directorial_brief, approved_shot_order]
+  character:
+    responsibility: character_identity_consistency
+    inputs: [character_bible, reference_assets, shot_cards]
+    outputs: [character_constraints, continuity_flags]
+  environment:
+    responsibility: environment_and_spatial_continuity
+    inputs: [environment_bible, location_assets, shot_cards]
+    outputs: [environment_constraints, lighting_rules]
+  prompt:
+    responsibility: model_specific_prompt_generation
+    targets: [veo, sora, kling]
+    outputs: [prompt_bundle, negative_prompt, generation_parameters]
+  video:
+    responsibility: generation_job_execution
+    outputs: [candidate_manifest, generation_metadata]
+  assembly:
+    responsibility: editorial_assembly
+    outputs: [batch_cut_manifest, edit_notes]
+  qa:
+    responsibility: quality_and_compliance_gate
+    checks: [story, character, environment, camera, image, audio, duration, rights, delivery]
+    outputs: [qa_report, pass_fail_decision]
+
+gates:
+  - shot_card_locked
+  - references_locked
+  - prompt_approved
+  - generation_reviewed
+  - assembly_reviewed
+  - qa_passed
