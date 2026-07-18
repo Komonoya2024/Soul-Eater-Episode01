@@ -1,0 +1,36 @@
+batch_id: CHAR-001-IMG-BATCH-A
+character_id: CHAR-001
+status: READY_FOR_GENERATION
+target_master: CHAR-001_APPROVED_MASTER_v001
+reference_files:
+  character_card: Character_Card.md
+  face_reference: Face_Reference.md
+  turnaround: Turnaround.md
+  costume_bible: Costume_Bible.md
+  expression_library: Expression_Library.md
+  pose_library: Pose_Library.md
+  prompt_library: Prompt_Library.md
+  qa_checklist: QA_Checklist.md
+stages:
+  - id: face_calibration
+    count: 4
+    glasses: false
+    output_pattern: CHAR-001_FACE_FRONT_NEUTRAL_CANDIDATE_{index}.png
+  - id: main_visual
+    count: 4
+    glasses: true
+    costume_id: CHAR-001-C02
+    output_pattern: CHAR-001_MAIN_C02_AR_CANDIDATE_{index}.png
+  - id: turnaround
+    views: [front, left, back, right, 45L, 45R]
+    costume_id: CHAR-001-C02
+  - id: costumes
+    costume_ids: [CHAR-001-C01, CHAR-001-C02, CHAR-001-C03]
+    views: [front, 45L, back]
+  - id: expressions
+    expression_ids: [NY-E01, NY-E02, NY-E03, NY-E04, NY-E05, NY-E06, NY-E07, NY-E08]
+    glasses_first_pass: false
+  - id: qa_master_lock
+    required_status: APPROVED
+    output_image: approved/CHAR-001_APPROVED_MASTER_v001.png
+    output_metadata: approved/CHAR-001_APPROVED_MASTER_v001.json
